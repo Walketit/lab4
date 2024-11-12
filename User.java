@@ -4,28 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    private int id;
-    private String name;
-    private String email;
-    private String password;
-    private int isAdmin;
-    private Logs logs;
-    private List<Account> accounts;
-    private List<Note> notes;
-    private List<Goal> goals;
+    private int id; // Уникальный идентификатор пользователя
+    private String name; // Имя пользователя
+    private String email; // Адрес электронной почты
+    private String password; // Пароль
+    private int isAdmin; // Флаг администратора (0 - обычный пользователь, 1 - администратор)
+    private Logs logs; // Объект для работы с логами
+    private List<Account> accounts; // Список счетов пользователя
+    private List<Note> notes; // Список заметок пользователя
+    private List<Goal> goals; // Список целей пользователя
 
-    public User() {
-        this.id = 0;
-        this.name = "";
-        this.email = "";
-        this.password = "";
-        this.isAdmin = 0;
-        this.logs = new Logs();
-        this.accounts = new ArrayList<>();
-        this.notes = new ArrayList<>();
-        this.goals = new ArrayList<>();
-    }
-
+    // Конструктор для создания пользователя
     public User(int id, String name, String email, String password, int isAdmin, Logs logs) {
         this.id = id;
         this.name = name;
@@ -37,6 +26,7 @@ public class User {
         this.notes = new ArrayList<>();
         this.goals = new ArrayList<>();
 
+        // Создание файла профиля пользователя
         String filename = "profile" + id + ".txt";
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("Имя: " + name + " (" + id + ")\n");
@@ -51,12 +41,14 @@ public class User {
             e.printStackTrace();
         }
 
+        // Логирование создания профиля
         logs.logfileCreate(id);
         logs.logfileUpdate(id, "Профиль создан");
     }
 
+    // Метод для добавления счета пользователю
     public void addAccount(Account account) {
-        account.setId(id + 100000);
+        account.setId(id + 100000); // Установка уникального ID для счета
         String filename = "account" + id + ".txt";
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("Счёт: " + account.getName() + " (" + account.getId() + ")\n");
@@ -66,12 +58,14 @@ public class User {
             e.printStackTrace();
         }
 
+        // Логирование создания счета
         String logname = "Счёт создан: " + account.getName();
         logs.logfileUpdate(id, logname);
 
-        accounts.add(account);
+        accounts.add(account); // Добавление счета в список счетов пользователя
     }
 
+    // Метод для отображения всех счетов пользователя
     public void displayAccounts() {
         System.out.println("Счета " + name + ":");
         for (Account account : accounts) {
@@ -80,17 +74,19 @@ public class User {
         }
     }
 
+    // Метод для добавления заметки пользователю
     public void addNote(Note note) {
         try (FileWriter writer = new FileWriter(note.getTitle() + ".txt")) {
             writer.write(note.getDescription());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logs.logfileUpdate(id, "Создана заметка");
+        logs.logfileUpdate(id, "Создана заметка"); // Логирование создания заметки
 
-        notes.add(note);
+        notes.add(note); // Добавление заметки в список заметок пользователя
     }
 
+    // Метод для отображения всех заметок пользователя
     public void displayNotes() {
         System.out.println("Записки " + name + ":");
         for (Note note : notes) {
@@ -99,12 +95,14 @@ public class User {
         }
     }
 
+    // Метод для добавления цели пользователю
     public void addGoal(Goal goal) {
         String n = "Создана цель: " + goal.getTitle();
-        logs.logfileUpdate(id, n);
-        goals.add(goal);
+        logs.logfileUpdate(id, n); // Логирование создания цели
+        goals.add(goal); // Добавление цели в список целей пользователя
     }
 
+    // Метод для отображения всех целей пользователя
     public void displayGoals() {
         System.out.println("Цели " + name + ":");
         for (Goal goal : goals) {
@@ -112,6 +110,7 @@ public class User {
         }
     }
 
+    // Метод для вывода информации о пользователе
     public void printUser() {
         System.out.println("Пользователь #" + id + ":");
         System.out.println("Имя: " + name);
@@ -119,6 +118,7 @@ public class User {
         System.out.println("Статус: " + (isAdmin == 1 ? "Администратор" : "Юзер"));
     }
 
+    // Метод для получения счета по индексу
     public Account getAccount(int index) {
         if (index >= 0 && index < accounts.size()) {
             return accounts.get(index);
