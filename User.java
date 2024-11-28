@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class User {
     private int id; // Уникальный идентификатор пользователя
     private String name; // Имя пользователя
@@ -14,9 +15,12 @@ public class User {
     private List<Note> notes; // Список заметок пользователя
     private List<Goal> goals; // Список целей пользователя
 
+    // Статическое поле для хранения количества пользователей
+    private static int userCount = 0;
+
     // Конструктор для создания пользователя
     public User(int id, String name, String email, String password, int isAdmin, Logs logs) {
-        this.id = id;
+        this.id = userCount;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -25,6 +29,8 @@ public class User {
         this.accounts = new ArrayList<>();
         this.notes = new ArrayList<>();
         this.goals = new ArrayList<>();
+
+        userCount++;
 
         // Создание файла профиля пользователя
         String filename = "profile" + id + ".txt";
@@ -124,5 +130,51 @@ public class User {
             return accounts.get(index);
         }
         return null;
+    }
+
+    // Геттеры
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAdmin() {
+        if (isAdmin == 1) return true;
+        return false;
+    }
+
+    // Методы обработки строк
+    // Метод для форматирования информации о пользователе
+    public String getFormattedInfo() {
+        return String.format("Пользователь #%d: Имя: %s, Email: %s, Статус: %s",
+                id, name, email, isAdmin == 1 ? "Администратор" : "Юзер");
+    }
+
+    // Метод для поиска заметки по названию
+    public Note findNoteByTitle(String title) {
+        for (Note note : notes) {
+            if (note.getTitle().equalsIgnoreCase(title)) {
+                return note;
+            }
+        }
+        return null;
+    }
+
+    // Метод для замены пароля
+    public void changePassword(String oldPassword, String newPassword) {
+        if (password.equals(oldPassword)) {
+            password = newPassword;
+            logs.logfileUpdate(id, "Пароль изменен");
+        } else {
+            System.out.println("Старый пароль неверен.");
+        }
+    }
+
+    // Статический метод для получения количества пользователей
+    public static int getUserCount() {
+        return userCount;
     }
 }

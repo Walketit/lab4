@@ -4,78 +4,56 @@ import java.util.*;
 
 public class main {
     public static void main(String[] args) {
-        Logs logs = new Logs();
-        logs.getTime().printCurrentTime();
+        UserManager userManager = new UserManager();
+        Logs logs = new Logs(); // Предполагается, что класс Logs уже определен
 
-        User user1 = new User(1, "John", "Johnmail@gmail.com", "123", 0, logs);
+        // Создание пользователей
+        User user1 = new User(1, "Иван", "ivan@example.com", "password1", 0, logs);
+        User user2 = new User(2, "Мария", "maria@example.com", "password2", 1, logs);
 
-        user1.printUser();
+        // Добавление пользователей в список
+        userManager.addUser(user1);
+        userManager.addUser(user2);
 
-        Account account1 = new Account("main", 0.0, "RUB");
-        Account account2 = new Account("Основа", 100.0, "EUR");
+        // Создание счетов для пользователей
+        Account account1 = new Account("Основной счёт", 1000.0, "USD");
+        Account account2 = new Account("Сберегательный счёт", 5000.0, "EUR");
 
         user1.addAccount(account1);
-        user1.addAccount(account2);
+        user2.addAccount(account2);
 
-        user1.displayAccounts();
+        // Создание заметок для пользователей
+        Note note1 = new Note("Покупки", "Купить продукты на неделю", "Личные");
+        Note note2 = new Note("Работа", "Завершить проект до конца месяца", "Работа");
 
-        System.out.println();
-
-        Transaction transaction = new Transaction(1, user1.getAccount(0));
-        transaction.changeValue("Стипендия", 0, 5000);
-
-        transaction.setTransaction(2, user1.getAccount(1));
-        transaction.changeValue("Оплата за подписку", 1, 5);
-
-        System.out.println();
-
-        user1.displayAccounts();
-
-        System.out.println();
-
-        CurrencyChange cur = new CurrencyChange();
-        cur.setCurrencyChange("RUBEUR");
-        cur.change(1000);
-
-        System.out.println();
-
-        Goal goal1 = new Goal("BMW M5", 5000000.0, 0.0, "Хочу машину");
-        user1.addGoal(goal1);
-        user1.displayGoals();
-
-        System.out.println();
-
-        Note note1 = new Note("Список продуктов", "Купить молоко,хлеб,колбасу", "Покупки");
         user1.addNote(note1);
-        user1.displayNotes();
+        user2.addNote(note2);
 
-        System.out.println();
+        // Создание целей для пользователей
+        Goal goal1 = new Goal("Купить новый телефон", 500.0, 1000.0, "Нужно обновить гаджет");
+        Goal goal2 = new Goal("Сэкономить на отпуск", 2000.0, 5000.0, "Хочу отдохнуть");
 
-        logs.readLogs(1);
+        user1.addGoal(goal1);
+        user2.addGoal(goal2);
 
-        // Работа с динамическим массивом объектов класса
-        int numUsers = 3;
-        User[] users = new User[numUsers];
-        users[0] = new User(3, "Layla", "Layla1999@gmail.com", "asd", 0, logs);
-        users[1] = new User(4, "Matt", "MattSmith@gmail.com", "asdzxc", 1, logs);
-        users[2] = new User(5, "Лео", "Messi@gmail.com", "111111", 0, logs);
+        // Отображение всех пользователей
+        userManager.displayAllUsers();
 
-        System.out.println("\nДинамический список объектов:");
-        for (int i = 0; i < numUsers; ++i) {
-            users[i].printUser();
-            System.out.println();
-        }
+        // Отображение всех счетов пользователя с ID 1
+        userManager.displayUserAccounts(1);
 
-        // Работа с массивом динамических объектов класса
-        int numGoals = 2;
-        Goal[] goals = new Goal[numGoals];
-        goals[0] = new Goal("Квартира", 500000000.0, 0.0, "Мечта");
-        goals[1] = new Goal("Playstation 5", 65000.0, 0.0, "Купить на новогодних скидках");
+        // Отображение всех заметок пользователя с ID 2
+        userManager.displayUserNotes(2);
 
-        System.out.println("\nСписок Динамических объектов:");
-        for (int i = 0; i < numGoals; ++i) {
-            goals[i].printGoal();
-            System.out.println();
+        // Отображение всех целей пользователя с ID 1
+        userManager.displayUserGoals(1);
+
+        // Возврат значения из метода через вспомогательный класс
+        UserInfo userInfo = userManager.getUserInfoById(1);
+        if (userInfo != null) {
+            System.out.println(userInfo);
+        } else {
+            System.out.println("Пользователь не найден.");
         }
     }
 }
