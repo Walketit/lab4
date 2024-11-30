@@ -1,8 +1,9 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
 
 public class User {
     private int id; // Уникальный идентификатор пользователя
@@ -19,7 +20,7 @@ public class User {
     private static int userCount = 0;
 
     // Конструктор для создания пользователя
-    public User(int id, String name, String email, String password, int isAdmin, Logs logs) {
+    public User(String name, String email, String password, int isAdmin, Logs logs) throws MyExcpetions {
         this.id = userCount;
         this.name = name;
         this.email = email;
@@ -33,6 +34,8 @@ public class User {
         userCount++;
 
         // Создание файла профиля пользователя
+        if (name.isEmpty())
+            throw new MyExcpetions("Имя не может быть пустым!");
         String filename = "profile" + id + ".txt";
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("Имя: " + name + " (" + id + ")\n");
@@ -43,7 +46,7 @@ public class User {
             } else {
                 writer.write("Статус: Юзер\n");
             }
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
 
@@ -176,5 +179,35 @@ public class User {
     // Статический метод для получения количества пользователей
     public static int getUserCount() {
         return userCount;
+    }
+
+    // Методы работы с массивом
+    // Метод для вывода информации о всех пользователях
+    public static void displayUsers(List<User> users) {
+        for (User user : users) {
+            user.printUser();
+            user.displayAccounts();
+            System.out.println();
+        }
+    }
+
+    // Метод для поиска пользователя по имени
+    public static User findUserByName(List<User> users, String name) {
+        for (User user : users) {
+            if (user.getName().equalsIgnoreCase(name)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    // Метод для сортировки пользователей по имени
+    public static void sortUsersByName(List<User> users) {
+        Collections.sort(users, new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                return user1.getName().compareTo(user2.getName());
+            }
+        });
     }
 }
