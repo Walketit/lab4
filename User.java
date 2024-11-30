@@ -127,6 +127,10 @@ public class User {
         System.out.println("Статус: " + (isAdmin == 1 ? "Администратор" : "Юзер"));
     }
 
+    public UserInfo printUserHelpClass() {
+        return new UserInfo(id, name, email, isAdmin == 1);
+    }
+
     // Метод для получения счета по индексу
     public Account getAccount(int index) {
         if (index >= 0 && index < accounts.size()) {
@@ -171,6 +175,7 @@ public class User {
         if (password.equals(oldPassword)) {
             password = newPassword;
             logs.logfileUpdate(id, "Пароль изменен");
+            System.out.println("Пароль для пользователя " + id + " успешно изменён!");
         } else {
             System.out.println("Старый пароль неверен.");
         }

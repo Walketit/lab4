@@ -59,5 +59,16 @@ public class main {
         User.displayUsers(users);
 
         System.out.println("Количество созданных пользователей: " + User.getUserCount());
+
+        // Демонстрация работы со строками
+        System.out.println("Форматирование строки");
+        System.out.println(user1.getFormattedInfo());
+
+        // Изменение пароля
+        user1.changePassword("password1", "passwordBIG");
+
+        // Возврат значения из метода через вспомогательный класс
+        System.out.println("Возврат значения из метода через вспомогательный класс");
+        System.out.println(user1.printUserHelpClass());
     }
 }
