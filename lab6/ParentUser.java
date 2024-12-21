@@ -1,4 +1,4 @@
-public class ParentUser extends User{
+public class ParentUser extends User {
     private boolean canDeleteAccounts; // Право удалять счета
     private boolean canDeleteNotes; // Право удалять заметки
     private boolean canViewLogs; // Право просматривать логи
@@ -10,22 +10,22 @@ public class ParentUser extends User{
         this.canViewLogs = canViewLogs;
     }
 
-    // Перегруженный метод для удаления счета пользователя
+    // метод для удаления счета пользователя
     public void deleteAccount(User user, Account account) {
         if (canDeleteAccounts) {
             user.getAccounts().remove(account);
-            System.out.println("Счёт " + account.getName() + " удалён у пользователя " + user.getName());
+            System.out.println("Счёт " + account.getName() + " удалён у пользователя " + name);
         } else {
             System.out.println("У вас нет прав на удаление счетов.");
         }
     }
 
 
-    // Перегруженный метод для удаления заметки пользователя
+    // метод для удаления заметки пользователя
     public void deleteNote(User user, Note note) {
         if (canDeleteNotes) {
             user.getNotes().remove(note);
-            System.out.println("Заметка " + note.getTitle() + " удалёна у пользователя " + user.getName());
+            System.out.println("Заметка " + note.getTitle() + " удалёна у пользователя " + name);
         } else {
             System.out.println("У вас нет прав на удаление заметок.");
         }
@@ -38,6 +38,26 @@ public class ParentUser extends User{
         } else {
             System.out.println("У вас нет прав на просмотр логов других пользователей.");
         }
+    }
+
+    @Override
+    public void printUser() {
+        // С вызовом метода базового класса
+        super.printUser(); // Вызов метода базового класса
+        System.out.println("Дополнительные права администратора:");
+        System.out.println("Может удалять счета: " + (canDeleteAccounts ? "Да" : "Нет"));
+        System.out.println("Может удалять заметки: " + (canDeleteNotes ? "Да" : "Нет"));
+        System.out.println("Может просматривать логи: " + (canViewLogs ? "Да" : "Нет"));
+    }
+
+    // Перегрузка метода для вывода информации в другом формате (без вызова базового класса)
+    public void printUserWithoutBaseCall() {
+        System.out.printf("Администратор: %s, Email: %s, Права: Удаление счетов: %s, Удаление заметок: %s, Просмотр логов: %s\n",
+                name, email,
+                canDeleteAccounts ? "Да" : "Нет",
+                canDeleteNotes ? "Да" : "Нет",
+                canViewLogs ? "Да" : "Нет");
+
     }
 
 }

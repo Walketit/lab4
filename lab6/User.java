@@ -6,20 +6,20 @@ import java.util.Comparator;
 import java.util.List;
 
 public class User implements Exportable {
-    private int id; // РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
-    private String name; // РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
-    private String email; // РђРґСЂРµСЃ СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ РїРѕС‡С‚С‹
-    private String password; // РџР°СЂРѕР»СЊ
-    private int isAdmin; // Р¤Р»Р°Рі Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° (0 - РѕР±С‹С‡РЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ, 1 - Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ)
-    private Logs logs; // РћР±СЉРµРєС‚ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Р»РѕРіР°РјРё
-    private List<Account> accounts; // РЎРїРёСЃРѕРє СЃС‡РµС‚РѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
-    private List<Note> notes; // РЎРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
-    private List<Goal> goals; // РЎРїРёСЃРѕРє С†РµР»РµР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+    protected int id; // Уникальный идентификатор пользователя
+    protected String name; // Имя пользователя
+    protected String email; // Адрес электронной почты
+    protected String password; // Пароль
+    protected int isAdmin; // Флаг администратора (0 - обычный пользователь, 1 - администратор)
+    protected Logs logs; // Объект для работы с логами
+    protected List<Account> accounts; // Список счетов пользователя
+    protected List<Note> notes; // Список заметок пользователя
+    protected List<Goal> goals; // Список целей пользователя
 
-    // РЎС‚Р°С‚РёС‡РµСЃРєРѕРµ РїРѕР»Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
-    private static int userCount = 0;
+    // Статическое поле для хранения количества пользователей
+    protected static int userCount = 0;
 
-    // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+    // Конструктор для создания пользователя
     public User(String name, String email, String password, int isAdmin, Logs logs) throws MyExcpetions {
         this.id = userCount;
         this.name = name;
@@ -33,105 +33,105 @@ public class User implements Exportable {
 
         userCount++;
 
-        // РЎРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р° РїСЂРѕС„РёР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+        // Создание файла профиля пользователя
         if (name.isEmpty())
-            throw new MyExcpetions("РРјСЏ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј!");
+            throw new MyExcpetions("Имя не может быть пустым!");
         String filename = "profile" + id + ".txt";
         try (FileWriter writer = new FileWriter(filename)) {
-            writer.write("РРјСЏ: " + name + " (" + id + ")\n");
-            writer.write("РџРѕС‡С‚Р°: " + email + "\n");
-            writer.write("РџР°СЂРѕР»СЊ: " + password + "\n");
+            writer.write("Имя: " + name + " (" + id + ")\n");
+            writer.write("Почта: " + email + "\n");
+            writer.write("Пароль: " + password + "\n");
             if (isAdmin == 1) {
-                writer.write("РЎС‚Р°С‚СѓСЃ: РђРґРјРёРЅ\n");
+                writer.write("Статус: Админ\n");
             } else {
-                writer.write("РЎС‚Р°С‚СѓСЃ: Р®Р·РµСЂ\n");
+                writer.write("Статус: Юзер\n");
             }
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
 
-        // Р›РѕРіРёСЂРѕРІР°РЅРёРµ СЃРѕР·РґР°РЅРёСЏ РїСЂРѕС„РёР»СЏ
+        // Логирование создания профиля
         logs.logfileCreate(id);
-        logs.logfileUpdate(id, "РџСЂРѕС„РёР»СЊ СЃРѕР·РґР°РЅ");
+        logs.logfileUpdate(id, "Профиль создан");
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ СЃС‡РµС‚Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
+    // Метод для добавления счета пользователю
     public void addAccount(Account account) {
-        account.setId(id + 100000); // РЈСЃС‚Р°РЅРѕРІРєР° СѓРЅРёРєР°Р»СЊРЅРѕРіРѕ ID РґР»СЏ СЃС‡РµС‚Р°
+        account.setId(id + 100000); // Установка уникального ID для счета
         String filename = "account" + id + ".txt";
         try (FileWriter writer = new FileWriter(filename)) {
-            writer.write("РЎС‡С‘С‚: " + account.getName() + " (" + account.getId() + ")\n");
-            writer.write("Р’Р»Р°РґРµР»РµС†: " + name + " (" + id + ")\n");
-            writer.write("Р‘Р°Р»Р°РЅСЃ: " + account.getBalance() + " " + account.getCurrency() + "\n");
+            writer.write("Счёт: " + account.getName() + " (" + account.getId() + ")\n");
+            writer.write("Владелец: " + name + " (" + id + ")\n");
+            writer.write("Баланс: " + account.getBalance() + " " + account.getCurrency() + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Р›РѕРіРёСЂРѕРІР°РЅРёРµ СЃРѕР·РґР°РЅРёСЏ СЃС‡РµС‚Р°
-        String logname = "РЎС‡С‘С‚ СЃРѕР·РґР°РЅ: " + account.getName();
+        // Логирование создания счета
+        String logname = "Счёт создан: " + account.getName();
         logs.logfileUpdate(id, logname);
 
-        accounts.add(account); // Р”РѕР±Р°РІР»РµРЅРёРµ СЃС‡РµС‚Р° РІ СЃРїРёСЃРѕРє СЃС‡РµС‚РѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+        accounts.add(account); // Добавление счета в список счетов пользователя
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІСЃРµС… СЃС‡РµС‚РѕРІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+    // Метод для отображения всех счетов пользователя
     public void displayAccounts() {
-        System.out.println("РЎС‡РµС‚Р° " + name + ":");
+        System.out.println("Счета " + name + ":");
         for (Account account : accounts) {
-            System.out.println("РЎС‡С‘С‚: " + account.getName());
-            System.out.printf("Р‘Р°Р»Р°РЅСЃ: %.2f %s\n", account.getBalance(), account.getCurrency());
+            System.out.println("Счёт: " + account.getName());
+            System.out.printf("Баланс: %.2f %s\n", account.getBalance(), account.getCurrency());
         }
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ Р·Р°РјРµС‚РєРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
+    // Метод для добавления заметки пользователю
     public void addNote(Note note) {
         try (FileWriter writer = new FileWriter(note.getTitle() + ".txt")) {
             writer.write(note.getDescription());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logs.logfileUpdate(id, "РЎРѕР·РґР°РЅР° Р·Р°РјРµС‚РєР°"); // Р›РѕРіРёСЂРѕРІР°РЅРёРµ СЃРѕР·РґР°РЅРёСЏ Р·Р°РјРµС‚РєРё
+        logs.logfileUpdate(id, "Создана заметка"); // Логирование создания заметки
 
-        notes.add(note); // Р”РѕР±Р°РІР»РµРЅРёРµ Р·Р°РјРµС‚РєРё РІ СЃРїРёСЃРѕРє Р·Р°РјРµС‚РѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+        notes.add(note); // Добавление заметки в список заметок пользователя
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІСЃРµС… Р·Р°РјРµС‚РѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+    // Метод для отображения всех заметок пользователя
     public void displayNotes() {
-        System.out.println("Р—Р°РїРёСЃРєРё " + name + ":");
+        System.out.println("Записки " + name + ":");
         for (Note note : notes) {
-            System.out.println("Р—Р°РїРёСЃРєР°: " + note.getTitle() + ", РљР°С‚РµРіРѕСЂРёСЏ: " + note.getCategory());
+            System.out.println("Записка: " + note.getTitle() + ", Категория: " + note.getCategory());
             System.out.println(note.getDescription());
         }
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ С†РµР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
+    // Метод для добавления цели пользователю
     public void addGoal(Goal goal) {
-        String n = "РЎРѕР·РґР°РЅР° С†РµР»СЊ: " + goal.getTitle();
-        logs.logfileUpdate(id, n); // Р›РѕРіРёСЂРѕРІР°РЅРёРµ СЃРѕР·РґР°РЅРёСЏ С†РµР»Рё
-        goals.add(goal); // Р”РѕР±Р°РІР»РµРЅРёРµ С†РµР»Рё РІ СЃРїРёСЃРѕРє С†РµР»РµР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+        String n = "Создана цель: " + goal.getTitle();
+        logs.logfileUpdate(id, n); // Логирование создания цели
+        goals.add(goal); // Добавление цели в список целей пользователя
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІСЃРµС… С†РµР»РµР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+    // Метод для отображения всех целей пользователя
     public void displayGoals() {
-        System.out.println("Р¦РµР»Рё " + name + ":");
+        System.out.println("Цели " + name + ":");
         for (Goal goal : goals) {
-            System.out.printf("Р¦РµР»СЊ: %s, РўРµРєСѓС‰Р°СЏ СЃСѓРјРјР°: %.2f, Р¦РµР»РµРІР°СЏ СЃСѓРјРјР°: %.2f\n", goal.getTitle(), goal.getCurrentBalance(), goal.getTargetAmount());
+            System.out.printf("Цель: %s, Текущая сумма: %.2f, Целевая сумма: %.2f\n", goal.getTitle(), goal.getCurrentBalance(), goal.getTargetAmount());
         }
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РІС‹РІРѕРґР° РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ
+    // Метод для вывода информации о пользователе
     public void printUser() {
-        System.out.println("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ #" + id + ":");
-        System.out.println("РРјСЏ: " + name);
+        System.out.println("Пользователь #" + id + ":");
+        System.out.println("Имя: " + name);
         System.out.println("Email: " + email);
-        System.out.println("РЎС‚Р°С‚СѓСЃ: " + (isAdmin == 1 ? "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ" : "Р®Р·РµСЂ"));
+        System.out.println("Статус: " + (isAdmin == 1 ? "Администратор" : "Юзер"));
     }
 
     public UserInfo printUserHelpClass() {
         return new UserInfo(id, name, email, isAdmin == 1);
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃС‡РµС‚Р° РїРѕ РёРЅРґРµРєСЃСѓ
+    // Метод для получения счета по индексу
     public Account getAccount(int index) {
         if (index >= 0 && index < accounts.size()) {
             return accounts.get(index);
@@ -139,7 +139,7 @@ public class User implements Exportable {
         return null;
     }
 
-    // Р“РµС‚С‚РµСЂС‹
+    // Геттеры
     public int getId() {
         return id;
     }
@@ -148,17 +148,17 @@ public class User implements Exportable {
         return name;
     }
 
-    // Р“РµС‚С‚РµСЂ РґР»СЏ СЃРїРёСЃРєР° СЃС‡РµС‚РѕРІ
+    // Геттер для списка счетов
     public List<Account> getAccounts() {
         return accounts;
     }
 
-    // Р“РµС‚С‚РµСЂ РґР»СЏ СЃРїРёСЃРєР° Р·Р°РїРёСЃРѕРє
+    // Геттер для списка записок
     public List<Note> getNotes() {
         return notes;
     }
 
-    // Р“РµС‚С‚РµСЂ РґР»СЏ РѕР±СЉРµРєС‚Р° Logs
+    // Геттер для объекта Logs
     public Logs getLogs() {
         return logs;
     }
@@ -168,14 +168,14 @@ public class User implements Exportable {
         return false;
     }
 
-    // РњРµС‚РѕРґС‹ РѕР±СЂР°Р±РѕС‚РєРё СЃС‚СЂРѕРє
-    // РњРµС‚РѕРґ РґР»СЏ С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ
+    // Методы обработки строк
+    // Метод для форматирования информации о пользователе
     public String getFormattedInfo() {
-        return String.format("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ #%d: РРјСЏ: %s, Email: %s, РЎС‚Р°С‚СѓСЃ: %s",
-                id, name, email, isAdmin == 1 ? "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ" : "Р®Р·РµСЂ");
+        return String.format("Пользователь #%d: Имя: %s, Email: %s, Статус: %s",
+                id, name, email, isAdmin == 1 ? "Администратор" : "Юзер");
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РїРѕРёСЃРєР° Р·Р°РјРµС‚РєРё РїРѕ РЅР°Р·РІР°РЅРёСЋ
+    // Метод для поиска заметки по названию
     public Note findNoteByTitle(String title) {
         for (Note note : notes) {
             if (note.getTitle().equalsIgnoreCase(title)) {
@@ -185,24 +185,24 @@ public class User implements Exportable {
         return null;
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ Р·Р°РјРµРЅС‹ РїР°СЂРѕР»СЏ
+    // Метод для замены пароля
     public void changePassword(String oldPassword, String newPassword) {
         if (password.equals(oldPassword)) {
             password = newPassword;
-            logs.logfileUpdate(id, "РџР°СЂРѕР»СЊ РёР·РјРµРЅРµРЅ");
-            System.out.println("РџР°СЂРѕР»СЊ РґР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ " + id + " СѓСЃРїРµС€РЅРѕ РёР·РјРµРЅС‘РЅ!");
+            logs.logfileUpdate(id, "Пароль изменен");
+            System.out.println("Пароль для пользователя " + id + " успешно изменён!");
         } else {
-            System.out.println("РЎС‚Р°СЂС‹Р№ РїР°СЂРѕР»СЊ РЅРµРІРµСЂРµРЅ.");
+            System.out.println("Старый пароль неверен.");
         }
     }
 
-    // РЎС‚Р°С‚РёС‡РµСЃРєРёР№ РјРµС‚РѕРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
+    // Статический метод для получения количества пользователей
     public static int getUserCount() {
         return userCount;
     }
 
-    // РњРµС‚РѕРґС‹ СЂР°Р±РѕС‚С‹ СЃ РјР°СЃСЃРёРІРѕРј
-    // РњРµС‚РѕРґ РґР»СЏ РІС‹РІРѕРґР° РёРЅС„РѕСЂРјР°С†РёРё Рѕ РІСЃРµС… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏС…
+    // Методы работы с массивом
+    // Метод для вывода информации о всех пользователях
     public static void displayUsers(List<User> users) {
         for (User user : users) {
             user.printUser();
@@ -211,7 +211,7 @@ public class User implements Exportable {
         }
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ РїРѕРёСЃРєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕ РёРјРµРЅРё
+    // Метод для поиска пользователя по имени
     public static User findUserByName(List<User> users, String name) {
         for (User user : users) {
             if (user.getName().equalsIgnoreCase(name)) {
@@ -221,7 +221,7 @@ public class User implements Exportable {
         return null;
     }
 
-    // РњРµС‚РѕРґ РґР»СЏ СЃРѕСЂС‚РёСЂРѕРІРєРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РїРѕ РёРјРµРЅРё
+    // Метод для сортировки пользователей по имени
     public static void sortUsersByName(List<User> users) {
         Collections.sort(users, new Comparator<User>() {
             @Override

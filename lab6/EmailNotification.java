@@ -1,5 +1,5 @@
 public class EmailNotification extends Notification {
-    private String email; // РђРґСЂРµСЃ СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ РїРѕС‡С‚С‹
+    private String email; // Адрес электронной почты
 
     public EmailNotification(String message, String email) {
         super(message);
@@ -8,7 +8,7 @@ public class EmailNotification extends Notification {
 
     @Override
     public void send() {
-        System.out.println("РћС‚РїСЂР°РІРєР° СѓРІРµРґРѕРјР»РµРЅРёСЏ РїРѕ СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ РїРѕС‡С‚Рµ РЅР° Р°РґСЂРµСЃ " + email);
-        System.out.println("РЎРѕРѕР±С‰РµРЅРёРµ: " + message);
+        System.out.println("Отправка уведомления по электронной почте на адрес " + email);
+        System.out.println("Сообщение: " + message);
     }
 }
