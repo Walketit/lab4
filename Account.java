@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 public class Account implements Cloneable {
+=======
+public class Account {
+>>>>>>> parent of d4d8d44 (Старая лабораторная удалена)
     private int id; // Уникальный идентификатор счета
     private String name; // Название счета
     private String currency; // Валюта счета
@@ -83,6 +87,7 @@ public class Account implements Cloneable {
     public int getId() {
         return id;
     }
+<<<<<<< HEAD
 
     // Метод для мелкого клонирования
     @Override
@@ -103,4 +108,6 @@ public class Account implements Cloneable {
         clonedAccount.setBalance(this.balance);
         return clonedAccount;
     }
+=======
+>>>>>>> parent of d4d8d44 (Старая лабораторная удалена)
 }
